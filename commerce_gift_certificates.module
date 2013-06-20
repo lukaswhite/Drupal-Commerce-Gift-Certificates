@@ -7,15 +7,16 @@
  * @see http://www.drupalcommerce.org/specification/info-hooks/checkout
  *
  */
-function gift_certificates_commerce_line_item_type_info() {
+function commerce_gift_certificates_commerce_line_item_type_info() {
 
   $line_item_types['gift_certificate'] = array(    
+    'name' => t('Gift Certificate'),
     'description' => t('Line item for gift certificates'),
     'product' => TRUE,
 
     'callbacks' => array(
-      'configuration' => 'gift_certificates_line_item_configuration',
-      'title' => 'gift_certificates_line_item_title',
+      'configuration' => 'commerce_gift_certificates_line_item_configuration',
+      'title' => 'commerce_gift_certificates_line_item_title',
       'add_form' => 'commerce_product_line_item_add_form',
       'add_form_submit' => 'commerce_product_line_item_add_form_submit',
     ),
@@ -28,444 +29,18 @@ function gift_certificates_commerce_line_item_type_info() {
 /**
  * Callback to return the title of the custom line item
  */
-function gift_certificates_line_item_title() {
+function commerce_gift_certificates_line_item_title() {
   return t('Gift Certificate');
 }
 
-/**
- * Configure the gift certificate line item, adding the required fields.
- *
- * @param $line_item_type
- *   The info array of the line item type being configured.
- *
- * @see commerce_product_line_item_configuration()
- */
-function gift_certificates_line_item_configuration($line_item_type) {
-  
-  // create all the fields
-  foreach (_gift_certificates_installed_fields() as $field) {
-    field_create_field($field);
-  }
 
-  // create all the instances of the fields
-  foreach (_gift_certificates_installed_instances() as $instance) {
-    $instance['entity_type'] = 'commerce_line_item';
-    $instance['bundle'] = $line_item_type['type'];
-    field_create_instance($instance);
-  }
-
-}
-
-/**
- * Returns information about the fields we're going to add to our new line item type.
- */
-function _gift_certificates_installed_fields() {
-
-  $t = get_t();
-
-  return array(
-    'field_gift_recipient_name' => array(
-      'translatable' => '0',
-      'entity_types' => array(),
-      'settings' => array(
-        'max_length' => '255',
-      ),
-      'storage' => array(
-        'type' => 'field_sql_storage',
-        'settings' => array(),
-        'module' => 'field_sql_storage',
-        'active' => '1',
-        'details' => array(
-          'sql' => array(
-            'FIELD_LOAD_CURRENT' => array(
-              'field_data_field_gift_recipient_name' => array(
-                'value' => 'field_gift_recipient_name_value',
-                'format' => 'field_gift_recipient_name_format',
-              ),
-            ),
-            'FIELD_LOAD_REVISION' => array(
-              'field_revision_field_gift_recipient_name' => array(
-                'value' => 'field_gift_recipient_name_value',
-                'format' => 'field_gift_recipient_name_format',
-              ),
-            ),
-          ),
-        ),
-      ),
-      'foreign keys' => array(
-        'format' => array(
-          'table' => 'filter_format',
-          'columns' => array(
-            'format' => 'format',
-          ),
-        ),
-      ),
-      'indexes' => array(
-        'format' => array(
-          'format',
-        ),
-      ),
-      'field_name' => 'field_gift_recipient_name',
-      'type' => 'text',
-      'module' => 'text',
-      'active' => '1',
-      'locked' => '0',
-      'cardinality' => '1',
-      'deleted' => '0',
-      'columns' => array(
-        'value' => array(
-          'type' => 'varchar',
-          'length' => '255',
-          'not null' => FALSE,
-        ),
-        'format' => array(
-          'type' => 'varchar',
-          'length' => 255,
-          'not null' => FALSE,
-        ),
-      ),
-      'bundles' => array(
-        'commerce_line_item' => array(
-          'gift_certificate',
-        ),
-      ),
-    ),
-    'field_gift_recipient_email' => array(
-      'translatable' => '0',
-      'entity_types' => array(),
-      'settings' => array(),
-      'storage' => array(
-        'type' => 'field_sql_storage',
-        'settings' => array(),
-        'module' => 'field_sql_storage',
-        'active' => '1',
-        'details' => array(
-          'sql' => array(
-            'FIELD_LOAD_CURRENT' => array(
-              'field_data_field_gift_recipient_email' => array(
-                'email' => 'field_gift_recipient_email_email',
-              ),
-            ),
-            'FIELD_LOAD_REVISION' => array(
-              'field_revision_field_gift_recipient_email' => array(
-                'email' => 'field_gift_recipient_email_email',
-              ),
-            ),
-          ),
-        ),
-      ),
-      'foreign keys' => array(),
-      'indexes' => array(),
-      'field_name' => 'field_gift_recipient_email',
-      'type' => 'email',
-      'module' => 'email',
-      'active' => '1',
-      'locked' => '0',
-      'cardinality' => '1',
-      'deleted' => '0',
-      'columns' => array(
-        'email' => array(
-          'type' => 'varchar',
-          'length' => 255,
-          'not null' => FALSE,
-        ),
-      ),
-      'bundles' => array(
-        'commerce_line_item' => array(
-          'gift_certificate',
-        ),
-      ),
-    ),
-    'field_gift_sender_name' => array(
-      'translatable' => '0',
-      'entity_types' => array(),
-      'settings' => array(
-        'max_length' => '255',
-      ),
-      'storage' => array(
-        'type' => 'field_sql_storage',
-        'settings' => array(),
-        'module' => 'field_sql_storage',
-        'active' => '1',
-        'details' => array(
-          'sql' => array(
-            'FIELD_LOAD_CURRENT' => array(
-              'field_data_field_gift_sender_name' => array(
-                'value' => 'field_gift_sender_name_value',
-                'format' => 'field_gift_sender_name_format',
-              ),
-            ),
-            'FIELD_LOAD_REVISION' => array(
-              'field_revision_field_gift_sender_name' => array(
-                'value' => 'field_gift_sender_name_value',
-                'format' => 'field_gift_sender_name_format',
-              ),
-            ),
-          ),
-        ),
-      ),
-      'foreign keys' => array(
-        'format' => array(
-          'table' => 'filter_format',
-          'columns' => array(
-            'format' => 'format',
-          ),
-        ),
-      ),
-      'indexes' => array(
-        'format' => array(
-          'format',
-        ),
-      ),
-      'field_name' => 'field_gift_sender_name',
-      'type' => 'text',
-      'module' => 'text',
-      'active' => '1',
-      'locked' => '0',
-      'cardinality' => '1',
-      'deleted' => '0',
-      'columns' => array(
-        'value' => array(
-          'type' => 'varchar',
-          'length' => '255',
-          'not null' => FALSE,
-        ),
-        'format' => array(
-          'type' => 'varchar',
-          'length' => 255,
-          'not null' => FALSE,
-        ),
-      ),
-      'bundles' => array(
-        'commerce_line_item' => array(
-          'gift_certificate',
-        ),
-      ),
-    ),
-    'field_gift_personal_message' => array(
-      'translatable' => '0',
-      'entity_types' => array(),
-      'settings' => array(),
-      'storage' => array(
-        'type' => 'field_sql_storage',
-        'settings' => array(),
-        'module' => 'field_sql_storage',
-        'active' => '1',
-        'details' => array(
-          'sql' => array(
-            'FIELD_LOAD_CURRENT' => array(
-              'field_data_field_gift_personal_message' => array(
-                'value' => 'field_gift_personal_message_value',
-                'format' => 'field_gift_personal_message_format',
-              ),
-            ),
-            'FIELD_LOAD_REVISION' => array(
-              'field_revision_field_gift_personal_message' => array(
-                'value' => 'field_gift_personal_message_value',
-                'format' => 'field_gift_personal_message_format',
-              ),
-            ),
-          ),
-        ),
-      ),
-      'foreign keys' => array(
-        'format' => array(
-          'table' => 'filter_format',
-          'columns' => array(
-            'format' => 'format',
-          ),
-        ),
-      ),
-      'indexes' => array(
-        'format' => array(
-          'format',
-        ),
-      ),
-      'field_name' => 'field_gift_personal_message',
-      'type' => 'text_long',
-      'module' => 'text',
-      'active' => '1',
-      'locked' => '0',
-      'cardinality' => '1',
-      'deleted' => '0',
-      'columns' => array(
-        'value' => array(
-          'type' => 'text',
-          'size' => 'big',
-          'not null' => FALSE,
-        ),
-        'format' => array(
-          'type' => 'varchar',
-          'length' => 255,
-          'not null' => FALSE,
-        ),
-      ),
-      'bundles' => array(
-        'commerce_line_item' => array(
-          'gift_certificate',
-        ),
-      ),
-    )
-  );
-}
-
-/**
- * Returns information about the instances of the fields we're going to add 
- * to our new line item type.
- */
-function _gift_certificates_installed_instances() {
-
-  $t = get_t();
-
-  return array(
-    'field_gift_recipient_name' => array(
-      'label' => 'Recipient Name',
-      'widget' => array(
-        'weight' => '2',
-        'type' => 'text_textfield',
-        'module' => 'text',
-        'active' => 1,
-        'settings' => array(
-          'size' => '60',
-        ),
-      ),
-      'settings' => array(
-        'text_processing' => '0',
-        'user_register_form' => FALSE,
-      ),
-      'display' => array(
-        'default' => array(
-          'label' => 'above',
-          'type' => 'text_default',
-          'settings' => array(),
-          'module' => 'text',
-          'weight' => 4,
-        ),
-      ),
-      'required' => 1,
-      'description' => '',
-      'commerce_cart_settings' => array(
-        'field_access' => 1,
-      ),
-      'default_value' => NULL,
-      'field_name' => 'field_gift_recipient_name',
-      'entity_type' => 'commerce_line_item',
-      'bundle' => 'gift_certificate',
-      'deleted' => '0',
-    ),
-    'field_gift_recipient_email' => array(
-      'label' => 'Recipient Email',
-      'widget' => array(
-        'weight' => '3',
-        'type' => 'email_textfield',
-        'module' => 'email',
-        'active' => 1,
-        'settings' => array(
-          'size' => '60',
-        ),
-      ),
-      'settings' => array(
-        'user_register_form' => FALSE,
-      ),
-      'display' => array(
-        'default' => array(
-          'label' => 'above',
-          'type' => 'email_default',
-          'settings' => array(),
-          'module' => 'email',
-          'weight' => 5,
-        ),
-      ),
-      'required' => 1,
-      'description' => '',
-      'commerce_cart_settings' => array(
-        'field_access' => 1,
-      ),
-      'default_value' => NULL,
-      'field_name' => 'field_gift_recipient_email',
-      'entity_type' => 'commerce_line_item',
-      'bundle' => 'gift_certificate',
-      'deleted' => '0',
-    ),
-    'field_gift_sender_name' => array(
-      'label' => 'Sender Name',
-      'widget' => array(
-        'weight' => '4',
-        'type' => 'text_textfield',
-        'module' => 'text',
-        'active' => 1,
-        'settings' => array(
-          'size' => '60',
-        ),
-      ),
-      'settings' => array(
-        'text_processing' => '0',
-        'user_register_form' => FALSE,
-      ),
-      'display' => array(
-        'default' => array(
-          'label' => 'above',
-          'type' => 'text_default',
-          'settings' => array(),
-          'module' => 'text',
-          'weight' => 6,
-        ),
-      ),
-      'required' => 1,
-      'description' => '',
-      'commerce_cart_settings' => array(
-        'field_access' => 1,
-      ),
-      'default_value' => NULL,
-      'field_name' => 'field_gift_sender_name',
-      'entity_type' => 'commerce_line_item',
-      'bundle' => 'gift_certificate',
-      'deleted' => '0',
-    ),
-    'field_gift_personal_message' => array(
-      'label' => 'Personal Message',
-      'widget' => array(
-        'weight' => '5',
-        'type' => 'text_textarea',
-        'module' => 'text',
-        'active' => 1,
-        'settings' => array(
-          'rows' => '3',
-        ),
-      ),
-      'settings' => array(
-        'text_processing' => '0',
-        'user_register_form' => FALSE,
-      ),
-      'display' => array(
-        'default' => array(
-          'label' => 'above',
-          'type' => 'text_default',
-          'settings' => array(),
-          'module' => 'text',
-          'weight' => 7,
-        ),
-      ),
-      'required' => 0,
-      'description' => '',
-      'commerce_cart_settings' => array(
-        'field_access' => 1,
-      ),
-      'default_value' => NULL,
-      'field_name' => 'field_gift_personal_message',
-      'entity_type' => 'commerce_line_item',
-      'bundle' => 'gift_certificate',
-      'deleted' => '0',
-    )
-  );
-}
 
 /**
  * Implements hook_rules_action_info().
  */
-function gift_certificates_rules_action_info() {
+function commerce_gift_certificates_rules_action_info() {
   return array(
-    'gift_certificates_action_send' => array(
+    'commerce_gift_certificates_action_send' => array(
       'label' => t('Send Gift Certificate'),
       'group' => t('Gift Certificates'),
     ),    
@@ -475,7 +50,7 @@ function gift_certificates_rules_action_info() {
 /**
  * Rule action; sends gift certificate(s).
  */
-function gift_certificates_action_send() {
+function commerce_gift_certificates_action_send() {
   
   // Get the order
   $order_id = arg(1);
@@ -533,7 +108,7 @@ function gift_certificates_action_send() {
       );
 
       // Now send the coupon via email to the recipient
-      gift_certificates_mail_send($params);
+      commerce_gift_certificates_mail_send($params);
 
     }
   }
@@ -542,7 +117,7 @@ function gift_certificates_action_send() {
 /**
  * Implements hook_mail().
  */
-function gift_certificates_mail($key, &$message, $params) {
+function commerce_gift_certificates_mail($key, &$message, $params) {
   global $user;
   global $base_url;
   
@@ -576,9 +151,9 @@ function gift_certificates_mail($key, &$message, $params) {
  * @param $variables
  *   An array of variables used to send the mail, including the various parameters
  */
-function gift_certificates_mail_send($variables) {
+function commerce_gift_certificates_mail_send($variables) {
   
-  $module = 'gift_certificates';
+  $module = 'commerce_gift_certificates';
   $key = 'gift_certificate';
 
   // Specify 'to' and 'from' addresses.
