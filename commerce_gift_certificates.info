@@ -1,7 +1,7 @@
-name = Gift Certificates
+name = Commerce Gift Certificates
 description = Supporting functionality for gift certificates
 core = 7.x
-package = Spiceworld
+package = Commerce (contrib)
 
 dependencies[] = commerce
 dependencies[] = commerce_coupon
