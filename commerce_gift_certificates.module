@@ -130,6 +130,8 @@ function commerce_gift_certificates_mail($key, &$message, $params) {
 
       $message['subject'] = t('@sender_name has sent you a @site-name gift certificate', array('@sender_name' => $params['sender_name'], '@site-name' => variable_get('site_name', 'Drupal')), $options);   
 
+      $message['body'] = array();
+
       $message['body'][] = t('@recipient_name,', array('@recipient_name' => $params['recipient_name']), $options);
 
       $message['body'][] = t('@sender_name has sent you a gift certificate for @coupon_amount to spend at @site-name.', array('@sender_name' => $params['sender_name'], '@coupon_amount' => $params['coupon_amount'], '@site-name' => variable_get('site_name', 'Drupal')), $options);
